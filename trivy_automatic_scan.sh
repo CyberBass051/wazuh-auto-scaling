@@ -1,7 +1,17 @@
 #!/usr/bin/env bash
 
-DIR="."
+DIR="terraform"
 issues=0
+
+if ! command -v trivy &> /dev/null; then
+    echo "[!!!] trivy could not be found. Please install trivy before running this script."
+    exit 1
+fi
+
+if [ ! -d "$DIR" ]; then
+    echo "[!!!] terraform directory could not be found. Please run this script from the root of your project."
+    exit 1
+fi
 
 rm -f trivy_scan_*.txt
 
