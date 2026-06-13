@@ -21,7 +21,7 @@ for file in $DIR/*.tf; do
     report_name="trivy_scan_$(basename "$file").txt"
 
     if ! trivy config --severity HIGH,CRITICAL --exit-code 1 $file > $report_name; then
-        echo "[!!!] HIGH and/or CRITICAL issues found in $scan_result"
+        echo "[!!!] HIGH and/or CRITICAL issues found in $file"
         issues=$(( $issues + 1 ))
     else
         rm $report_name

@@ -14,6 +14,10 @@ resource "aws_launch_template" "wazuh_lt" {
 
     vpc_security_group_ids = [aws_security_group.wazuh_app_sg.id]
 
+    iam_instance_profile {
+      name = aws_iam_instance_profile.wazuh-profile.name
+    }
+
     
 
     user_data = base64encode(<<-EOF
@@ -39,7 +43,7 @@ resource "aws_launch_template" "wazuh_lt" {
       --cap-add=SYS_ADMIN \
       --cap-add=SYS_PTRACE \
       --cap-add=NET_ADMIN \
-      -e WAZUH_MANAGER="YOUR_MANAGER_PRIVATE_IP" \
+      -e WAZUH_MANAGER="${var.wazuh_manager_ip}" \
       -e WAZUH_AGENT_NAME="$(hostname)" \
       -e WAZUH_PASSWORD="$WAZUH_PASS" \
       -v /var/run/docker.sock:/var/run/docker.sock \

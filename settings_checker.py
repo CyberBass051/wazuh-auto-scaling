@@ -55,7 +55,7 @@ def check_settings(files: str, dry_run: bool = False) -> None:
         for file in files:
             json_report["files"].append({"filename": file, "status": "checked"})
             json_report["summary"]["total_files"] += 1
-            if file == 'alb.tf':
+            if os.path.basename(file) == 'alb.tf':
                 logger.info("Checking alb.tf")
                 pattern_to_check = r'(drop_invalid_header_fields\s+=\s+)(true|false)'
                 with open(file, 'r') as f:
@@ -82,7 +82,7 @@ def check_settings(files: str, dry_run: bool = False) -> None:
                         else:
                             logger.info("Dry run: would set drop_invalid_header_fields to true in %s", file)
 
-            elif file == 'ec2.tf':
+            elif os.path.basename(file) == 'ec2.tf':
                 logger.info("Checking ec2.tf")
                 with open(file, 'r') as f:
                     content = f.read()
@@ -118,11 +118,11 @@ def check_settings(files: str, dry_run: bool = False) -> None:
                         else:
                             new_content = re.sub(pattern_to_check, r'\1\2\3\5 1\6', content)
                             logger.info("Dry run: would change\n%s\nto\n%s", content, new_content)
-            elif file == 'sg.tf':
+            elif os.path.basename(file) == 'sg.tf':
                 logger.info("Checking sg.tf")
                 with open(file, 'r') as f:
                     content = f.read()
-                    pattern_to_check = r'(resource\s+"aws_vpc_security_group_egress_rule)(\s+.*)(cidr_ipv4\s+=\+)("0.0.0.0/0")'
+                    pattern_to_check = r'(resource\s+"aws_vpc_security_group_egress_rule)(\s+.*)(cidr_ipv4\s*=\s*)("0.0.0.0/0")'
                     match = re.search(pattern_to_check, content, re.DOTALL)
                     if not match:
                         logger.warning("No app egress rule found in %s", file)
@@ -155,6 +155,5 @@ def main():
 
 if __name__ == "__main__":
     main()
-
 
 

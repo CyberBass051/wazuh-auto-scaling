@@ -1,3 +1,6 @@
 vars.tf
+terraform.tfvars
+*.auto.tfvars
 /logs
 *.txt
+report.json
